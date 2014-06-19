@@ -30,7 +30,7 @@ Brief getting started guides are provided if you want to work with the [source c
 
 *Spectral Settings*
 -    Default.  The default settings are 10x4 second sub-epochs with a 50% [tukey window] (http://en.wikipedia.org/wiki/Window_function#Tukey_window). A 30 second scoring window is assumed.
--    SHHS.  The settings used for the [Sleep Heart Health Study](http://www.ncbi.nlm.nih.gov/pubmed/9493915) can be selected. The settings are 6x5 second sub-epochs with a [hanning window]((http://en.wikipedia.org/wiki/Hann_function)).  A 30 second scoring window is applied.
+-    SHHS.  The settings used for the [Sleep Heart Health Study](http://www.ncbi.nlm.nih.gov/pubmed/9493915) can be selected. The settings are 6x5 second sub-epochs with a [hanning window](http://en.wikipedia.org/wiki/Hann_function).  A 30 second scoring window is assumed.
 
 *Artifact Detection*
 -    Delta (0.6-4.6 Hz). Set the multiplicative threshold for the delta band, which defaults to 2.5
