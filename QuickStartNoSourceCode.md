@@ -2,7 +2,7 @@ Getting started
 ===========================================================
 
 #### BlockSpectralTrainFig - No source code
-The following tutorial is for the MATLAB APP version  SpectralTrainFig. MATLAB APPs were introduced in MATLAB version 2013b and provide a quick way to share programs. A set of steps are described below.
+The following tutorial is for the [MATLAB APP](http://www.mathworks.com/discovery/matlab-apps.html) version  SpectralTrainFig. MATLAB APPs were introduced in MATLAB version 2013b and provide a quick way to share programs. A set of steps are described below.
 
 #### Steps
 1. Download the BlockSpectralTrainFig.  Navigate to the SpectralTrainFig [release section](https://github.com/DennisDean/SpectralTrainFig/releases). Download the latest release of [BlockSpectralTrainFig.mlappinstall](https://github.com/DennisDean/SpectralTrainFig/releases/download/0.1.00/BlockSpectralTrainFig.mlappinstall).
