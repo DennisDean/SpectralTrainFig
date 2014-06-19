@@ -4,8 +4,6 @@ SpectralTrainFig
 #### Overview
 SpectralTrainFig is a graphical user interface that allows a user to select a folder of EDF/XML files to process. The GUI is configured to apply spectral analysis to the electroencephlography signal (EEG). The default spectral analysis parameters include 10x4 second sub-epochs with a 50% tukey window. Alternatively the user can set the spectral analysis parameters to the ones used for the SHHS study (6x5 second with Hanning window). The user can adjust the artifact detection thresholds, which are preset to reccomended values.  SpectralTrainFig is a user friendly approach to the SpectralAnalysisClass function which provides access to 56 parameters (artifact detection, spectral analysis, and figure configurations). The output includes EXCEL and PowerPoint summaries which are configured by user defined settings and specified spectral bands. Detail epoch by epoch and subject summaries are provided for both NREM and REM states.  
 
-#### Technical Overview
-The functional component of the GUI is implemented as a single class, which builds on the abilityhData Access and Visaulization (DAVS) Toolbox  data loading function. Ease of use,  to integrate within the research environment and computational speed guided the development. The Class format inclu
 
 ### Parameters
 
@@ -54,8 +52,19 @@ Results Folder. Select a folder to write program generated file to.
 
 *Compute Coherence*. Select check box to compute coherence between each pair of analysis signals.  Warning: the number of signal pair increases rapidly as the number of analysis signals grow. 
 
+### Technical Overview
+The functional component of the GUI is implemented as a single class, which builds on the data access classes developed as part of the [Data Access and Visaulization (DAVS) Tooklbox]{https://github.com/DennisDean/DAVS-Toolbox}. Ease of use, ability to integrate within the research environment and computational speed guided the development. Most of the key components are written as classes. In general, the clases structure used in development provided error checking and visual/numeric reporting cabilities.  The class feautres allows for the rapid development of a lean GUI. The use of PowerPoint and Excel as the standard ouput file type was selected so that research assistants with little programming experience can pre-screen the large number of results. Nearly, all the reccomendations for writing fast MATLAB script files is used in the program. The current time to process a single subject is currently 1 to 10 seconds on a medium size work station.  
+
 #### MATLAB APP
-See the release section for the MATLAB App and sample data. The MATLAB APP is a great way to get started with spectral analysis of sleep studies. Installing the APP version of SignalRasterView is a quick way to review an EDF content to determine the signal labels.  
+The MATLAB APP is a great way to get started with spectral analysis of sleep studies. Installing the APP version of SignalRasterView is a quick way to review an EDF's content and to determine the signal labels. See the release section for the MATLAB App and sample data.  
 
 #### Requirements
-The memory and hard disk requirements are dependent on the size and number of sleep studies to be analyzed. The program can run on a laptop with 8 Gb of RAM.  The preferred configurtion for a large number of studies is 16-32 Gb of RAM.   
+The memory and hard disk requirements are dependent on the size and number of sleep studies to be analyzed. The program can run on a laptop with 8 Gb of RAM.  The preferred configurtion for a large number of studies is 16-32 Gb of RAM.  
+
+#### Acknowledgments
+SpectralTrainFig uses several utilities available from the MATLAB file exchange area including:
+-    [dirr]{http://www.mathworks.com/matlabcentral/fileexchange/8682-dirr--find-files-recursively-filtering-name--date-or-bytes-} Used to create EDF/XMl file lists for processing
+-    [moving]{http://www.mathworks.com/matlabcentral/fileexchange/8251-moving-averages---moving-median-etc}. Used to compute running band averages for the artifact detection computations.
+-    [panel]{http://www.mathworks.com/matlabcentral/fileexchange/20003-panel}. Used to create a summary figure for review.
+-    [saveppt2]{http://www.mathworks.com/matlabcentral/fileexchange/19322-saveppt2}. USed to create PPT summaries from MATLAB figures.
+
