@@ -63,8 +63,8 @@ The memory and hard disk requirements are dependent on the size and number of sl
 
 #### Acknowledgments
 SpectralTrainFig uses several utilities available from the MATLAB file exchange area including:
--    [dirr]{http://www.mathworks.com/matlabcentral/fileexchange/8682-dirr--find-files-recursively-filtering-name--date-or-bytes-} Used to create EDF/XMl file lists for processing
--    [moving]{http://www.mathworks.com/matlabcentral/fileexchange/8251-moving-averages---moving-median-etc}. Used to compute running band averages for the artifact detection computations.
--    [panel]{http://www.mathworks.com/matlabcentral/fileexchange/20003-panel}. Used to create a summary figure for review.
--    [saveppt2]{http://www.mathworks.com/matlabcentral/fileexchange/19322-saveppt2}. USed to create PPT summaries from MATLAB figures.
+-    [dirr](http://www.mathworks.com/matlabcentral/fileexchange/8682-dirr--find-files-recursively-filtering-name--date-or-bytes-) Used to create EDF/XMl file lists for processing
+-    [moving](http://www.mathworks.com/matlabcentral/fileexchange/8251-moving-averages---moving-median-etc). Used to compute running band averages for the artifact detection computations.
+-    [panel](http://www.mathworks.com/matlabcentral/fileexchange/20003-panel). Used to create a summary figure for review.
+-    [saveppt2](http://www.mathworks.com/matlabcentral/fileexchange/19322-saveppt2). Used to create PPT summaries from MATLAB figures.
 
