@@ -2,7 +2,10 @@ SpectralTrainFig
 ================
 
 #### Overview
-SpectralTrainFig is a graphical user interface that allows a user to select a folder of EDF/XML files to process. The GUI is configured to apply spectral analysis to the electroencephlography signal (EEG). The default spectral analysis parameters include 10x4 second sub-epochs with a 50% tukey window. Alternatively the user can set the spectral analysis parameters to the ones used for the SHHS study (6x5 second with Hanning window). The user can adjust the artifact detection thresholds, which are preset to reccomended values.  SpectralTrainFig is a user friendly approach to the SpectralAnalysisClass function which provides access to 56 parameters (artifact detection, spectral analysis, and figure configurations). The output includes EXCEL and PowerPoint summaries which are configured by user defined settings and specified spectral bands. Detail epoch by epoch and subject summaries are provided for both NREM and REM states.  
+SpectralTrainFig is a graphical user interface that allows a user to select a folder of EDF/XML files to process. The GUI is configured to apply spectral analysis to the electroencephlography signal (EEG). The default spectral analysis parameters include 10x4 second sub-epochs with a 50% tukey window. Alternatively the user can set the spectral analysis parameters to the ones used for the SHHS study (6x5 second with Hanning window). The user can adjust the artifact detection thresholds, which are preset to reccomended values.  SpectralTrainFig is a user friendly approach to the SpectralAnalysisClass function which provides access to 56 parameters (artifact detection, spectral analysis, and figure configurations). The output includes EXCEL and PowerPoint summaries which are configured by user defined settings and specified spectral bands. Detail epoch by epoch and subject summaries are provided for both NREM and REM states. Additional details are described below.
+
+#### Getting Started
+Brief getting started guides are provided if you want to work with the [source code](https://github.com/DennisDean/SpectralTrainFig/blob/master/QuickStartSourceCode.md) or easy to use [MATLAB App](https://github.com/DennisDean/SpectralTrainFig/blob/master/QuickStartNoSouceCode.md).
 
 ### Parameters
 
@@ -68,3 +71,7 @@ SpectralTrainFig uses several utilities available from the MATLAB file exchange 
 -    [panel](http://www.mathworks.com/matlabcentral/fileexchange/20003-panel). Used to create a summary figure for review.
 -    [saveppt2](http://www.mathworks.com/matlabcentral/fileexchange/19322-saveppt2). Used to create PPT summaries from MATLAB figures.
 
+#### Related links
+- [National Sleep Research Resource](https://sleepdata.org/)
+- [Data Access and Visualization for Sleep Toolbox](https://github.com/DennisDean/DAVS-Toolbox);
+- [My MATLAB Exchange Contributions](http://www.mathworks.com/matlabcentral/fileexchange/?term=authorid:113409);
