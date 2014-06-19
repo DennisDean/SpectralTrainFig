@@ -12,7 +12,8 @@ SpectralTrainFig is a graphical user interface that allows a user to select a fo
 *Output File Prefix*. Enter a prefix, which will be used to start each file written by the program.
 
 *Data Folder*. Select a folder containing EDF and XML files
-Results Folder. Select a folder to write program generated files to.
+
+*Results Folder*. Select a folder to write program generated files to.
 
 ##### Analysis Parameters
 *Analysis Signals*. Enter signal labels that are to be analyzed as a cell string (ex. {'C3', 'C2', 'C3-A1'}. The signal labels are written in the EDF file.  Use your favorite EDF utility to determine the signal labels.  You can use [SignalRasterViewerFig](http://www.mathworks.com/matlabcentral/fileexchange/46420-blockedfsignalrasterview) to list the signal labels and to view the signals.
