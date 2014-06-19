@@ -12,7 +12,7 @@ The steps involved in setting up spectral analysis from the source code is descr
 6. *Start the Interface*. Type 'SpectralTrainFig' at the command line.
 6. *Select data folder*. Locate the 'Data Folder' text edit field and select the data folder created in step 4.
 7. *Select the result folder*. Locate the 'Results Folder' text edit field and select the data folder created in step 4.
-8. *Start the analysis*.  Click on the button labeled 'Go(all)' which is located at the bottom of the graphical user interface
+8. *Start the analysis*.  Click on the button labeled 'Go(all)' which is located at the bottom of the graphical user interface.
 
 
 The following text should scrool down your MATLAB console.
