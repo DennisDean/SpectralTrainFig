@@ -21,13 +21,13 @@ SpectralTrainFig is a graphical user interface that allows a user to select a fo
 *Reference Signals*. Enter the labels of the reference signals as a cell string (ex. {'A1', 'M1', 'M2'}).
 
 *Reference Methods*.  Select one of three approaches to referencing the signal.  
--  Single reference Signal. Enter a single signal label as cell string (ex. {M1}).  The reference signal is subsracted from each analysis signal. Entering a null cell string is interpreted as no referencing is to be applied (ex. {})). 
--  Reference for each analysis signal. Enter a reference for each signal as a cell string (ex. {'M1','M1','M2','M3'}). A signal label can be used multiple time.
--  Average of reference signals.  The average of the signals listed in the cell array is substracted from each analysis signals.
+-  *Single reference signal*. Enter a single signal label as cell string (ex. {'M1'}).  The reference signal is subtracted from each analysis signal. Entering a null cell string is interpreted as not to reference the analysis signals (ex. {})). 
+-  *Reference for each analysis signal*. Enter a reference for each signal as a cell string (ex. {'M1','M1','M2','M3'}). A signal label can be used multiple times.
+-  *Average of reference signals*.  The average of the signals listed in the cell array is substracted from each analysis signals.
 
 *Spectral Settings*
--    Default.  The default settings are 10/4 second sub-epochs with a 50% tukey window. A 30 second scoring window is assumed.
--    SHHS.  The settings used for the Sleep Heart Health Study can be selected. The settins are 6x5 second sub-epochs with a hanning window.  A 30 second scoring window is applied.
+-    Default.  The default settings are 10x4 second sub-epochs with a 50% tukey window. A 30 second scoring window is assumed.
+-    SHHS.  The settings used for the Sleep Heart Health Study can be selected. The settings are 6x5 second sub-epochs with a hanning window.  A 30 second scoring window is applied.
 
 *Artifact Detection*
 -    Delta (0.6-4.6 Hz). Set the multiplicative threshold for the delta band, which defaults to 2.5
@@ -53,13 +53,13 @@ SpectralTrainFig is a graphical user interface that allows a user to select a fo
 *Compute Coherence*. Select check box to compute coherence between each pair of analysis signals.  Warning: the number of signal pair increases rapidly as the number of analysis signals grow. 
 
 ### Technical Overview
-The functional component of the GUI is implemented as a single class, which builds on the data access classes developed as part of the [Data Access and Visaulization (DAVS) Tooklbox](https://github.com/DennisDean/DAVS-Toolbox). Ease of use, ability to integrate within the research environment and computational speed guided the development. Most of the key components are written as classes. In general, the clases structure used in development provide error checking and visual/numeric reporting cabilities.  The class feautres allows for the rapid development of a lean GUI. The use of PowerPoint and Excel as the standard ouput file type was selected so that research assistants with little programming experience can pre-screen the large number of results. Nearly, all the reccomendations for writing fast MATLAB script files is used in the program. The current time to process a single subject is currently 1 to 10 seconds on a medium size work station.  
+The functional component of the GUI is implemented as a single class, which builds on the data access classes developed as part of the [Data Access and Visaulization (DAVS) Tooklbox](https://github.com/DennisDean/DAVS-Toolbox). Most of the key components are written as classes. In general, the clases structure used in development provide error checking and visual/numeric reporting cabilities.  The class feautres allows for the rapid development of a lean GUI. The use of PowerPoint and Excel as the standard ouput file type was selected so that research assistants with little programming experience can pre-screen large number of results. Many of the reccomendations for writing fast MATLAB script files are used in the program. The current time to process a single subject is currently 1 to 10 seconds on a medium size work station, depending on the number of outputs written to disk.  
 
 #### MATLAB APP
 The MATLAB APP is a great way to get started with spectral analysis of sleep studies. Installing the APP version of SignalRasterView is a quick way to review an EDF's content and to determine the signal labels. See the release section for the MATLAB App and sample data.  
 
 #### Requirements
-The memory and hard disk requirements are dependent on the size and number of sleep studies to be analyzed. The program can run on a laptop with 8 Gb of RAM.  The preferred configurtion for a large number of studies is 16-32 Gb of RAM.  
+The memory and hard disk requirements are dependent on the size and number of sleep studies to be analyzed. The program can run on a laptop with 8 Gb of RAM.  The preferred configurtion for a large number of studies is 16-32 Gb of RAM. Similarly, the required disk space is dependent on the number of signals process, the number files selected and the number of ouputs generated by the program. 
 
 #### Acknowledgments
 SpectralTrainFig uses several utilities available from the MATLAB file exchange area including:
