@@ -2,7 +2,7 @@ SpectralTrainFig
 ================
 
 #### Overview
-SpectralTrainFig is a graphical user interface that allows a user to select a folder of [EDF](http://en.wikipedia.org/wiki/European_Data_Format)/XML files to apply [spectral analysis](http://en.wikipedia.org/wiki/Spectral_estimation) to [electroencephlography signals (EEG)](http://en.wikipedia.org/wiki/Electroencephalography). The default spectral analysis parameters include 10x4 second sub-epochs with a 50% [tukey window](http://en.wikipedia.org/wiki/Window_function#Tukey_window). Alternatively the user can set the spectral analysis parameters to the ones used for the SHHS study (6x5 second with [Hanning window](http://en.wikipedia.org/wiki/Hann_function)). The spectral analsysis program includes a spectral threshold based artifact detection scheme described in the [literature](http://www.ncbi.nlm.nih.gov/pubmed/16388912). The user can adjust the artifact detection thresholds, which are preset to reccomended values.  SpectralTrainFig is a user friendly approach to the SpectralAnalysisClass function which provides access to 56 parameters (artifact detection, spectral analysis, and figure configurations). The output includes EXCEL and PowerPoint summaries which are configured by user defined settings and specified spectral bands. Detail epoch by epoch and subject summaries are provided for both NREM and REM states. Additional details are described below.
+SpectralTrainFig is a graphical user interface that allows a user to select a folder of [EDF](http://en.wikipedia.org/wiki/European_Data_Format)/XML files to apply [spectral analysis](http://en.wikipedia.org/wiki/Spectral_estimation) to [electroencephlography signals (EEG)](http://en.wikipedia.org/wiki/Electroencephalography). The spectral analsysis program includes a spectral threshold based artifact detection scheme described in the [literature](http://www.ncbi.nlm.nih.gov/pubmed/16388912). The user can adjust the artifact detection thresholds, which are preset to reccomended values.  SpectralTrainFig is a user friendly approach to the SpectralAnalysisClass function. The output includes EXCEL and PowerPoint summaries which are configured by user defined settings and specified spectral bands. Detail epoch by epoch and subject summaries are provided for both NREM and REM states. Additional details are described below.
 
 #### Getting Started
 Brief getting started guides are provided if you want to work with the [source code](https://github.com/DennisDean/SpectralTrainFig/blob/master/QuickStartSouceCode.md) or easy to use [MATLAB App](https://github.com/DennisDean/SpectralTrainFig/blob/master/QuickStartNoSourceCode.md).
@@ -29,8 +29,8 @@ Brief getting started guides are provided if you want to work with the [source c
 -  *Average of reference signals*.  The average of the signals listed in the cell array is substracted from each analysis signals.
 
 *Spectral Settings*
--    Default.  The default settings are 10x4 second sub-epochs with a 50% tukey window. A 30 second scoring window is assumed.
--    SHHS.  The settings used for the Sleep Heart Health Study can be selected. The settings are 6x5 second sub-epochs with a hanning window.  A 30 second scoring window is applied.
+-    Default.  The default settings are 10x4 second sub-epochs with a 50% [tukey window] (http://en.wikipedia.org/wiki/Window_function#Tukey_window). A 30 second scoring window is assumed.
+-    SHHS.  The settings used for the [Sleep Heart Health Study](http://www.ncbi.nlm.nih.gov/pubmed/9493915) can be selected. The settings are 6x5 second sub-epochs with a [hanning window]((http://en.wikipedia.org/wiki/Hann_function)).  A 30 second scoring window is applied.
 
 *Artifact Detection*
 -    Delta (0.6-4.6 Hz). Set the multiplicative threshold for the delta band, which defaults to 2.5
@@ -45,8 +45,8 @@ Brief getting started guides are provided if you want to work with the [source c
 
 *About*. Displays graphical user interface description and copyright notice.
 
-*Set Bands*. Load an Excel file with a list of spectral bands to analyze/report on.  Examples of the Excel spreadsheet can be found in the release section.
-
+*Set Bands*. Load an Excel file with a list of spectral bands to analyze/report on.  Examples of the Excel spreadsheet can be found in the release section. The spectral analysis band summaries include slow oscilations (0.5-1 Hz), delta (1-4 Hz), theta (4-8 Hz), alpha (8-12 Hz), sigma (12-15 Hz), slow sigma (12-13.5), fast sigma (13.5-15 Hz) and beta (15-20 Hz). The default Excel file can be downloaded from here.
+ 
 *Bands*. Start batch processing. Compute and report band summaries by subject and create a summary across subjects.
 
 *Go (min)*. Reccomended batch processing option.  Visual (PPT) and numeric (XLS) summaries are created across subjects.  Visual summary allows for a rapid review of all subjects.
