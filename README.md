@@ -73,5 +73,5 @@ SpectralTrainFig uses several utilities available from the MATLAB file exchange 
 
 #### Related links
 - [National Sleep Research Resource](https://sleepdata.org/)
-- [Data Access and Visualization for Sleep Toolbox](https://github.com/DennisDean/DAVS-Toolbox);
-- [My MATLAB File Exchange Contributions](http://www.mathworks.com/matlabcentral/fileexchange/?term=authorid:113409);
+- [Data Access and Visualization for Sleep Toolbox](https://github.com/DennisDean/DAVS-Toolbox)
+- [My MATLAB File Exchange Contributions](http://www.mathworks.com/matlabcentral/fileexchange/?term=authorid:113409)
