@@ -1,7 +1,9 @@
 Getting started with BlockSpectralTrainFig - No source code
+===========================================================
 
 The following tutorial is for the MATLAB APP version  SpectralTrainFig. MATLAB APPs were introduced in MATLAB version 2013b and provide a quick way to share programs. A set of steps are described below.
 
+#### Steps
 1. Download the BlockSpectralTrainFig.  Navigate to the SpectralTrainFig [release section](https://github.com/DennisDean/SpectralTrainFig/releases). Download the latest release of [BlockSpectralTrainFig.mlappinstall](https://github.com/DennisDean/SpectralTrainFig/releases/download/0.1.00/BlockSpectralTrainFig.mlappinstall).
 2. Install Spectral Train Fig. Open MATLAB version 2013b or later (assuming APPS compatible with newer versions). Double click on BlockSpectralTrainFig.mlappinstall. The APP should apear in the APPS Toolbar located near the top of the MATLAB interface.
 3. Download the sample dataset.  Download both the sleep study EDF file ([450002.EDF](https://github.com/DennisDean/SpectralTrainFig/releases/download/0.1.00/450002.EDF)) and the annotation file ([450002.EDF.XML](https://github.com/DennisDean/SpectralTrainFig/releases/download/0.1.00/450002.EDF.XML)).
