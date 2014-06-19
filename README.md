@@ -4,7 +4,6 @@ SpectralTrainFig
 #### Overview
 SpectralTrainFig is a graphical user interface that allows a user to select a folder of EDF/XML files to process. The GUI is configured to apply spectral analysis to the electroencephlography signal (EEG). The default spectral analysis parameters include 10x4 second sub-epochs with a 50% tukey window. Alternatively the user can set the spectral analysis parameters to the ones used for the SHHS study (6x5 second with Hanning window). The user can adjust the artifact detection thresholds, which are preset to reccomended values.  SpectralTrainFig is a user friendly approach to the SpectralAnalysisClass function which provides access to 56 parameters (artifact detection, spectral analysis, and figure configurations). The output includes EXCEL and PowerPoint summaries which are configured by user defined settings and specified spectral bands. Detail epoch by epoch and subject summaries are provided for both NREM and REM states.  
 
-
 ### Parameters
 
 ##### Description
@@ -13,14 +12,14 @@ SpectralTrainFig is a graphical user interface that allows a user to select a fo
 *Output File Prefix*. Enter a prefix, which will be used to start each file written by the program.
 
 *Data Folder*. Select a folder containing EDF and XML files
-Results Folder. Select a folder to write program generated file to.
+Results Folder. Select a folder to write program generated files to.
 
 ##### Analysis Parameters
-*Analysis Signals*. Enter signal labels that are to be analyzed as a cell string (ex. {'C3', 'C2', 'C3-A1'}. The signal labels are written in the EDF file.  Use your favorite EDF utility to determine the signal labels.  You can use [SignalRasterViewerFig]{} to list the signal labels and to view the signals.
+*Analysis Signals*. Enter signal labels that are to be analyzed as a cell string (ex. {'C3', 'C2', 'C3-A1'}. The signal labels are written in the EDF file.  Use your favorite EDF utility to determine the signal labels.  You can use [SignalRasterViewerFig](http://www.mathworks.com/matlabcentral/fileexchange/46420-blockedfsignalrasterview) to list the signal labels and to view the signals.
 
-*Reference Signals*. Enter teh labels of the reference signals as a cell string (ex. {'A1', 'M1', 'M2'}).
+*Reference Signals*. Enter the labels of the reference signals as a cell string (ex. {'A1', 'M1', 'M2'}).
 
-*Reference Methods*.  Select one of three approaches to referening the signal.  
+*Reference Methods*.  Select one of three approaches to referencing the signal.  
 -  Single reference Signal. Enter a single signal label as cell string (ex. {M1}).  The reference signal is subsracted from each analysis signal. Entering a null cell string is interpreted as no referencing is to be applied (ex. {})). 
 -  Reference for each analysis signal. Enter a reference for each signal as a cell string (ex. {'M1','M1','M2','M3'}). A signal label can be used multiple time.
 -  Average of reference signals.  The average of the signals listed in the cell array is substracted from each analysis signals.
@@ -53,7 +52,7 @@ Results Folder. Select a folder to write program generated file to.
 *Compute Coherence*. Select check box to compute coherence between each pair of analysis signals.  Warning: the number of signal pair increases rapidly as the number of analysis signals grow. 
 
 ### Technical Overview
-The functional component of the GUI is implemented as a single class, which builds on the data access classes developed as part of the [Data Access and Visaulization (DAVS) Tooklbox]{https://github.com/DennisDean/DAVS-Toolbox}. Ease of use, ability to integrate within the research environment and computational speed guided the development. Most of the key components are written as classes. In general, the clases structure used in development provided error checking and visual/numeric reporting cabilities.  The class feautres allows for the rapid development of a lean GUI. The use of PowerPoint and Excel as the standard ouput file type was selected so that research assistants with little programming experience can pre-screen the large number of results. Nearly, all the reccomendations for writing fast MATLAB script files is used in the program. The current time to process a single subject is currently 1 to 10 seconds on a medium size work station.  
+The functional component of the GUI is implemented as a single class, which builds on the data access classes developed as part of the [Data Access and Visaulization (DAVS) Tooklbox](https://github.com/DennisDean/DAVS-Toolbox). Ease of use, ability to integrate within the research environment and computational speed guided the development. Most of the key components are written as classes. In general, the clases structure used in development provide error checking and visual/numeric reporting cabilities.  The class feautres allows for the rapid development of a lean GUI. The use of PowerPoint and Excel as the standard ouput file type was selected so that research assistants with little programming experience can pre-screen the large number of results. Nearly, all the reccomendations for writing fast MATLAB script files is used in the program. The current time to process a single subject is currently 1 to 10 seconds on a medium size work station.  
 
 #### MATLAB APP
 The MATLAB APP is a great way to get started with spectral analysis of sleep studies. Installing the APP version of SignalRasterView is a quick way to review an EDF's content and to determine the signal labels. See the release section for the MATLAB App and sample data.  
