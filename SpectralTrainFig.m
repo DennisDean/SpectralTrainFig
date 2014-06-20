@@ -51,7 +51,7 @@ function varargout = SpectralTrainFig(varargin)
 
 % Edit the above text to modify the response to help SpectralTrainFig
 
-% Last Modified by GUIDE v2.5 18-Jun-2014 07:11:41
+% Last Modified by GUIDE v2.5 19-Jun-2014 11:43:58
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -567,7 +567,7 @@ stcObj.PLOT_COMPREHENSIVE_SPECTRAL_SUMMARY = 1;
 stcObj.PLOT_HYPNOGRAM = 0;
 stcObj.PLOT_ARTIFACT_SUMMARY = 0;
 stcObj.PLOT_SPECTRAL_SUMMARY = 0;
-stcObj.PLOT_NREM_REM_SPECTRUM = 0;
+stcObj.PLOT_NREM_REM_SPECTRUM = 1;
 stcObj.OUTPUT_AVERAGE_SPECTROGRAMS = 1;
 stcObj.PLOT_BAND_ACTIVITY = 0;
 stcObj.artifactTH = [deltaTh betaTh];
@@ -919,3 +919,12 @@ function pm_analysis_start_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in pb_close_all.
+function pb_close_all_Callback(hObject, eventdata, handles)
+% hObject    handle to pb_close_all (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+SpectralTrainClass.CloseChildrenFigures
