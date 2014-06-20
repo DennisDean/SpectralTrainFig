@@ -494,17 +494,15 @@ classdef SpectralTrainClass
                             % Substract single reference from each
                             numRefSignals = length(obj.referenceSignals);
                             numAnalSignals = length(obj.analysisSignals);
-                            ref = signalCell{end};
-                            ns = length(obj.analysisSignals);
-                            for s = 1:ns
+                            ref = signalCell{numAnalSignals+1};
+                            for s = 1:numAnalSignals
                                 signalCell{s} = signalCell{s}-ref;
                             end
                         elseif obj.referenceMethodIndex == 2
                             % Subtract specified reference from each signal
                             numAnalSignals = length(obj.analysisSignals);
                             ref = signalCell(numAnalSignals+1:end);
-                            ns = length(obj.analysisSignals);
-                            for s = 1:ns
+                            for s = 1:numAnalSignals
                                 signalCell{s} = signalCell{s}-ref{s};
                             end 
                         elseif obj.referenceMethodIndex == 3
@@ -513,17 +511,15 @@ classdef SpectralTrainClass
                             numRefSignals = length(obj.referenceSignals);
                             ref = mean(cell2mat(...
                                 signalCell(numAnalSignals+1:end)),2);
-                            ns = length(obj.analysisSignals);
-                            for s = 1:ns
+                            for s = 1:numAnalSignals
                                 signalCell{s} = signalCell{s}-ref;
                             end 
                         else
                             % Substract single reference from each
                             numRefSignals = length(obj.referenceSignals);
                             numAnalSignals = length(obj.analysisSignals);
-                            ref = signalCell{end};
-                            ns = length(obj.analysisSignals);
-                            for s = 1:ns
+                            ref = signalCell{numAnalSignals+1};
+                            for s = 1:numAnalSignals
                                 signalCell{s} = signalCell{s}-ref;
                             end
                         end
@@ -718,15 +714,15 @@ classdef SpectralTrainClass
                             fprintf('\t\tComputing spectrogram for %s\n',signalLabels{s});
 
                             % Zero Signal by 30 second epochs
-                            dataAvg = reshape(signalCell{1}(1:numPtsPer30secEpoch*returnedNum30SecEpochs),...
+                            dataAvg = reshape(signalCell{s}(1:numPtsPer30secEpoch*returnedNum30SecEpochs),...
                                 returnedNum30SecEpochs, numPtsPer30secEpoch);
                             dataAvg =reshape((mean(dataAvg,2)*ones(1, numPtsPer30secEpoch))', ...
                                 returnedNum30SecEpochs*numPtsPer30secEpoch,1);
                             dataZeroed = ...
-                                signalCell{1}(1:numPtsPer30secEpoch*returnedNum30SecEpochs)...
+                                signalCell{s}(1:numPtsPer30secEpoch*returnedNum30SecEpochs)...
                                 -dataAvg;...
                             dataZeroed = ...
-                                signalCell{1}(1:numPtsPer30secEpoch*returnedNum30SecEpochs)...
+                                signalCell{s}(1:numPtsPer30secEpoch*returnedNum30SecEpochs)...
                                 -0;...
                                 
                             % Compute spectrogram with pwelch method
@@ -1161,8 +1157,9 @@ classdef SpectralTrainClass
                                 % pxxEpoch(:, wakeMask) =zeros(length(freq), sum(wakeMask));
 
                                 % Plot Data
+                                scalingFactorForEffect = 4;
                                 set(gca,'Ydir', 'Reverse');
-                                imagesc(flipud(pxxEpoch(fIdx,:)));
+                                imagesc(flipud(pxxEpoch(fIdx,:))*scalingFactorForEffect);
                                 colormap(map); 
                                 colorbar;
 
@@ -1299,11 +1296,13 @@ classdef SpectralTrainClass
                                 %------------------------------------ Panel
                                 % Create panel
                                 p = panel();
-                                b = 34;
-                                t = 15;
-                                p.pack('h', {1/b  t/b 1/b t/b []});
-                                p(2).pack({1/b  t/b 1/b t/b []});
-                                p(4).pack({1/b  t/b 1/b t/b []});
+                                h1 = 20;
+                                h2 = 60;
+                                t = 1;
+                                d = t*2+h2*3;
+                                p.pack('v', {t/(d+h1+1) 1/(d+h1+1) []});
+                                p(3).pack('h', {75/105 1/105 []});
+                                p(3,1).pack('v', {h2/d t/d h2/d t/d []});
                                 
                                 %------------------------------ Title Panel
                                 % Add plot title
@@ -1314,10 +1313,9 @@ classdef SpectralTrainClass
                                 box off
                                 axis('off');
                                 
-                                
                                 %------------------------------------ Plot contour plot
                                 % Select active panel frame
-                                p(2,2).select();
+                                p(3,1,1).select();
                                 
                                 % Get data and zero wake values
                                 pxxEpoch = log10(pxxCell{s});
@@ -1327,7 +1325,7 @@ classdef SpectralTrainClass
                                 set(gca,'Ydir', 'Reverse');
                                 imagesc(flipud(pxxEpoch(fIdx,:)));
                                 colormap(map); 
-                                colorbar;
+                                % colorbar;
                                 v = axis;
                                 v(1) = 0;
                                 v(2) = size(pxxEpoch,2);
@@ -1379,7 +1377,7 @@ classdef SpectralTrainClass
                                 box on;
                                 %------------------------------ Plot slow wave activity
                                 % Select active panel frame
-                                p(4,4).select();
+                                p(3,1,5).select();
 
                                 % Get data
                                 swaSpectrum = (artifact.swaSpectrum);
@@ -1445,7 +1443,8 @@ classdef SpectralTrainClass
                                     'FontSize',fontSize, 'Interpreter', 'None');
                                 yLabelStr = sprintf('log10(Density (%s^2/Hz))', analysisEegUnits);
                                 ylabel(yLabelStr, 'FontWeight','bold','FontSize',fontSize);
-
+                                xlabel('Epoch Number', 'FontWeight','bold','FontSize',fontSize);
+                                
                                 % Format Axis
                                 set(gca, 'LineWidth',plotLineWidth);
                                 set(gca, 'Layer','top');
@@ -1457,7 +1456,7 @@ classdef SpectralTrainClass
                                 
                                 %--------------------------------------- Plot Hypnogram
                                 % Select active panel
-                                p(2,4).select();
+                                p(3,1,3).select();
                                 
                                 % Plot Hypnogram
                                 plot(numericHypnogram, 'LineWidth', plotLineWidth);
@@ -1471,7 +1470,7 @@ classdef SpectralTrainClass
                                 % Add annotations
                                 title('Hypnogram', 'FontWeight','bold','FontSize',fontSize, ...
                                    'Interpreter', 'None');
-                                xlabel('Epoch Number', 'FontWeight','bold','FontSize',fontSize);
+                                
                                 ylabel('Stage', 'FontWeight','bold','FontSize',fontSize);
 
                                 % Set x axis
@@ -1490,7 +1489,7 @@ classdef SpectralTrainClass
                                 
                                 %------------------- Plot NREM/REM Spectrum
                                 % Select active panel
-                                p(4,2).select();
+                                p(3,3).select();
 
                                 % Get data and zero wake values
                                 pxxEpoch = pxxCell{s}(fIdx, :);
@@ -1786,10 +1785,10 @@ classdef SpectralTrainClass
                                     set(gca, 'Layer','top');
                                     set(gca, 'FontWeight','bold');
                                     set(gca, 'FontSize',fontSize);
-                                end
-                            end
+                                end % For each band of interest
+                            end % Plot band activity
 
-                        end
+                        end % For each signal
 
                         %% Save results
                         % Save numeric values
