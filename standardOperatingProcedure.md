@@ -1,4 +1,5 @@
 Spectral and Coherence
+============================
 Standard Operating Procedure
 ============================
 
@@ -72,4 +73,4 @@ Use the 'Start' popup menu to start the the analyiss at a particular file id (se
 
 
 ### Result Review
-
+Review the MS PowerPoint Summaries and all of the group summary files (ex. bands and spectra). Identify spectra with non-physiological components or substantial missing data.  Substantial signal contamination (ECG, EMG, artifact) whould be identfied for review prio to analysis. Please discuss with scientific lead since hypothesis specific inclusion/exclusions may be required.
