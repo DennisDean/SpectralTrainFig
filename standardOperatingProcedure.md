@@ -66,8 +66,8 @@ The coherence analysis steps are the same as for spectral analysis with one addi
 
 *Warning*. Coherence analysis can be time consuming and may generate substantial ouput. As much as 2Gb of output can be generated. It is reccomended that spectral analysis is run first on the data set.  Once data organization and content issues are resolved, coherence analysis is likely to complete in one run.  
 
-**Error Recovery
-Use the 'Start' popup menu to start the the analyiss at a particular file id (see generated file list in result folder). It is recommended that the subjects files are either removed or the data issue is fixed.  Note that if files are removed the file lists generated in the previous run should be deleted.
+**Error Recovery**
+Use the 'Start' popup menu to start the the analyiss at a particular file id (see generated file list in result folder). It is recommended that the subjects files are either removed or the data issue is fixed.  Note that if files are removed the file lists generated in the previous run should be deleted. Group summaries require all the subjects to be analyzed in one run. Rerun analysis from begining once all data issues are resolved.
 
 
 ### Result Review
