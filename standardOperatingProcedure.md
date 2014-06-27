@@ -1,8 +1,7 @@
-##Spectral and Coherence 
-Standard Operating Procedure
+##Spectral and Coherence SOP
 
 
-The spectral and coherence SOP describes a data preparation/review, data analysis and results review phase.
+The spectral and coherence standard operating procedure (SOP) describes a data preparation/review, data analysis and results review phase.
 
 ### Data Preparation and Review
 The data preparation and review phase includes the step and checks required to prepare the data for analysis.  The current version is designed to work with Compumedics Profusion exports that include both an [EDF](http://en.wikipedia.org/wiki/European_Data_Format) and annotation (XML) file.  In our experience EDF exports from other systems work seemlessly with our tools.  The class based annotation loader ([LoadCompumedicsAnnotations](https://github.com/DennisDean/LoadCompumedicsAnnotationsClass/blob/master/README.md]) can be revised to support other commercial file formats.
