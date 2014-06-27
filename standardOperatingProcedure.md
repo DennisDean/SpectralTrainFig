@@ -1,5 +1,5 @@
-##Spectral and Coherence
-##Standard Operating Procedure
+##Spectral and Coherence 
+Standard Operating Procedure
 
 
 The spectral and coherence SOP describes a data preparation/review, data analysis and results review phase.
