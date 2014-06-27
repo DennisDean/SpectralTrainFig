@@ -1,5 +1,4 @@
 Spectral and Coherence
-============================
 Standard Operating Procedure
 ============================
 
