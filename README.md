@@ -7,7 +7,7 @@ SpectralTrainFig is a graphical user interface that allows a user to select a fo
 #### Getting Started
 Brief getting started guides are provided if you want to work with the [source code](https://github.com/DennisDean/SpectralTrainFig/blob/master/QuickStartSouceCode.md) or the easy to use [MATLAB App](https://github.com/DennisDean/SpectralTrainFig/blob/master/QuickStartNoSourceCode.md).
 
-Did you do execute the examples in the getting started guide and want to setup a large run? Look at our standard operating procedure (SOP) for applying spectral and coherence analysis to a large number of EDF files.
+Did you do execute the examples in the getting started guide and want to setup a large run? Look at our [standard operating procedure (SOP)](https://github.com/DennisDean/SpectralTrainFig/blob/master/standardOperatingProcedure.md) for applying spectral and coherence analysis to a large number of EDF files.
 
 ### Parameters
 
