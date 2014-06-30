@@ -12,7 +12,7 @@ BlockEdfSummarizeFig is a utility designed to quickly summarize the contents of 
 
 **Getting Started**
 
-1. *Open/Install BlockEdfSummarizeFig*. [BlockEdfsummarizeFig](https://github.com/DennisDean/BlockEdfSummarizeFig) is available as MATLAB [source code](https://github.com/DennisDean/BlockEdfSummarizeFig) and as a [MATLAB APP](https://github.com/DennisDean/BlockEdfSummarizeFig/releases). Information on how to install a MATLAB APP can be found on the (MATLAB website)[http://www.mathworks.com/help/matlab/apps_bt44d44-1.html]. We reccomend that you make a shortcut on the MATLAB toolbar that switches to the BlockEdfSummariFig folder and starts BlockEdfSummarizeLoad when using the source code version.
+1. *Open/Install BlockEdfSummarizeFig*. [BlockEdfsummarizeFig](https://github.com/DennisDean/BlockEdfSummarizeFig) is available as MATLAB [source code](https://github.com/DennisDean/BlockEdfSummarizeFig) and as a [MATLAB APP](https://github.com/DennisDean/BlockEdfSummarizeFig/releases). Information on how to install a MATLAB APP can be found on the [MATLAB website](http://www.mathworks.com/help/matlab/apps_bt44d44-1.html). We reccomend that you make a shortcut on the MATLAB toolbar that switches to the BlockEdfSummariFig folder and starts BlockEdfSummarizeLoad when using the source code version.
 
 2. *Run BlockEdfSummarizeFig*. Use the shorcut described in 1. or click on the APP from the APP menu (depends on the setup).
 
