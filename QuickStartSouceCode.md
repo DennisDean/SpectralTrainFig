@@ -8,10 +8,10 @@ The steps involved in setting up spectral analysis from the source code is descr
 1. *Download the sourcecode*.  Download the latest releast of the BlockEdfSpectralTrain [source code] (https://github.com/DennisDean/SpectralTrainFig/archive/master.zip). Unzip the download and move the files to the folder you would like to run  BlockEdfSpectralTrainFig from.
 2. *Download the sample dataset*.  Download both the sleep study EDF file ([450002.EDF](https://github.com/DennisDean/SpectralTrainFig/releases/download/0.1.00/450002.EDF)) and the annotation file ([450002.EDF.XML](https://github.com/DennisDean/SpectralTrainFig/releases/download/0.1.00/450002.EDF.XML)).
 4. *Create a data source and analysis result folder*. Place both the EDF file and the annotation file in the data source folder.
-5. *Start Matlab*. Start matlab and navigate the current path to the source code folder.
+5. *Start Matlab*. Start MATLAB. Set/navigate the current path to the source code folder.
 6. *Start the Interface*. Type 'SpectralTrainFig' at the command line.
-6. *Select data folder*. Locate the 'Data Folder' text edit field and select the data folder created in step 4.
-7. *Select the result folder*. Locate the 'Results Folder' text edit field and select the data folder created in step 4.
+6. *Select data folder*. Locate the 'Data Folder' text edit field.  Select the data folder created in step 4 by clicking on the elipses (...) to the right of the 'Data Folder text edit field.
+7. *Select the result folder*. Locate the 'Results Folder' text edit field. Select the data folder created in step 4 by clicking on teh elipse (...) to the right of the 'Result Folder' text edit field.
 8. *Start the analysis*.  Click on the button labeled 'Go(all)' which is located at the bottom of the graphical user interface.
 
 
@@ -21,7 +21,7 @@ Look in the result folder to inspect the EXCEL and PPTs created. Don't have MATL
 
 
 
-The following text should scroll down your MATLAB console.
+Text similar to what is shown below should scroll down your MATLAB console.
 
 ```
 Spectral Analysis
