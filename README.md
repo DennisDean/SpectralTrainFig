@@ -61,6 +61,8 @@ Review our [standard operating procedure (SOP)](https://github.com/DennisDean/Sp
 ### Technical Overview
 The functional component of the GUI is implemented as a single [class](http://en.wikipedia.org/wiki/Object-oriented_programming), which builds on the data access classes developed as part of the [Data Access and Visaulization (DAVS) Toolbox](https://github.com/DennisDean/DAVS-Toolbox). Most of the key components are written as classes. The class structure provides error checking and visual/numeric reporting capabilities and allows for the rapid development of a lean GUI. The use of PowerPoint and Excel as the standard ouput file type was selected so that research assistants with little programming experience can pre-screen large number of results. Many of the reccomendations for writing fast MATLAB script files are used in the program. The current time to process a single subject is currently 1 to 10 seconds on a medium size work station, depending on the number of outputs written to disk.  
 
+SpectralTrainFig contains 13,148 lines of MATLAB source code. 6,872 lines of code were written for the project.  The remaining 6,276 lines of MATALB source code is from publically available utilites (see below).  
+
 #### MATLAB APP
 The [MATLAB APP](http://www.mathworks.com/discovery/matlab-apps.html) is a great way to get started with spectral analysis of sleep studies. See the [release section](https://github.com/DennisDean/SpectralTrainFig/releases) for the most recent APP version.  Installing the APP version of [SignalRasterView](http://www.mathworks.com/matlabcentral/fileexchange/46420-blockedfsignalrasterview) is a quick way to review an EDF's content and to determine the signal labels. See the release section for the MATLAB App and sample data.  
 
