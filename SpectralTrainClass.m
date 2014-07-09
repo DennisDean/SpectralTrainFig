@@ -1,20 +1,41 @@
 classdef SpectralTrainClass
     %SpectralTrainClass Spectral analysis program
+    %
     %       A flexible spectral analysis program developed to analyze sleep
     %   studies.  A spectral threshold artifact detection approach is 
-    %   included and modeled after the appraoched described in Buckelmuller
+    %   included and modeled after the appraoch described in Buckelmuller
     %   et al. 2006. 
+    %
     %       The program builds on the program developed by our Case
     %   Western Reserve University Colleagues for the Sleep Heart Health
-    %   Study.  Dr. Daniel Aeschbach provided technical guidance during the 
-    %   development and validation of the program.  The validation included
-    %   verififcation of theoretical results with sin waves with different
-    %   amplitudes and frequencies. The included artifact detection
-    %   paradigm was compared to results with manuadlly detected artifacts
-    %   for 170 subjects.
+    %   Study.  The Case Western Reserve University team is led by Dr. Kenneth 
+    %   A. Loparo. Dr. Daniel Aeschbach provided technical guidance during the 
+    %   development and validation of the program.  Leila Tarokh provided an
+    %   an outline of the spectral and coherence analysis pipeline. 
+    %
+    %       The Class serves as the functional component of a simplified
+    %   GUI, SpectralTrainFig, for running spectral analysis on batches of 
+    %   sleep studies. 
+    % 
+    %
+    % Reccomendations:
+    %
+    %   Do the example in the SpectralTrainFig getting started guide to get 
+    %   an overview of the programs features. Experienced programmer will
+    %   want to take a look at the
+    %
+    %   SpectralTrainFig gettting started:
+    %        https://github.com/DennisDean/SpectralTrainFig
+    % 
+    %   Please feel free to contact me if you want to discuss enhancements
+    %   you would like to make.  We would like to include them in future
+    %   releases.
+    %
     % 
     % Input:
+    %
     %    stcStruct:
+    %
     %        analysisDescription:
     %             Brief analysis description 
     %        StudyEdfFileListResultsFn:
@@ -35,17 +56,201 @@ classdef SpectralTrainClass
     %        StudyEdfResultDir:
     %        checkFile:
     %
+    %    bandFn (optional):
+    %
+    %        An EXCEL file that describes the spectral bands to analyze.
+    %        See the example file included in the release.  Note that the
+    %        bandFn option was introduced to support the associated GUI.
+    %    
+    %        An example of the file follows:
+    % 
+    %        bandsOfInterest	bandsOfInterestLabels	bandStart	bandEnd	bandsOfInterestLatex	bandColors
+    %        Delta	            Delta	                1	        4	    $\delta$	            [ 220  230  242 ]/255
+    %        Theta	            Theta	                4	        8	    $\theta$	            [ 242  220  219 ]/255
+    %
+    %        Column Labels:
+    %
+    %               bandsOfInterest: Text describing band   
+    %         bandsOfInterestLabels: Short text label for band
+    %                     bandStart: Band start in Hertz (inclusive)
+    %                       bandEnd: Band end in Hertz (inclusive)
+    %          bandsOfInterestLatex: Short Latex labels used in figures.
+    %                                Supports Greek letting
+    %                    bandColors: RGB color used for identifying band 
+    %                                range in figure.
+    %
+    % 
+    % User Parameters
+    %
+    %    Artifact Detection
+    %       artifactTh: artifact detection thresholds [deltaTh BetaTh]
+    %   
+    %    Run Flags/Options
+    %       GENERATE_FILE_LIST = 1;
+    %       TEST_REQUIRED_SIGNALS_ARE_PRESENT = 1;
+    %       HANNING_ADJUSTMENT = 0;
+    %       AVERAGE_ADJACENT_BANDS = 1;
+    %       START_ANALYSIS_FOR_EACH_FILE  = 1;
+    %       APPLY_ARTIFACT_REJECTION = 1;
+    %       COMPUTE_TOTAL_POWER = 1;
+    %       SUMMARIZE_BANDS = 1;
+    %       OUTPUT_AVERAGE_SPECTROGRAMS = 1;
+    %       PLOT_COMPREHENSIVE_SPECTRAL_SUMMARY = 1;
+    %       PLOT_CALIBRATION_TEST = 0;
+    %       PLOT_HYPNOGRAM = 0;
+    %       PLOT_ARTIFACT_SUMMARY = 1;
+    %       PLOT_SPECTRAL_SUMMARY = 1;
+    %       PLOT_NREM_REM_SPECTRUM = 1;
+    %       PLOT_BAND_ACTIVITY = 1;
+    %       EXPORT_INDIVIDUAL_BAND_SUMMARY = 1;
+    %       EXPORT_BAND_SUMMARY = 1;
+    %       EXPORT_SPECTRAL_DETAILS = 1;
+    %       EXPORT_TOTAL_POWER = 0;
+    %       VALIDATION_PLOTS = 0;
+    %       CREATE_POWER_POINT_SUMMARY = 1;   
+    %
+    %    Sleep Scoring Parameter (See Public Properties for additional details)
+    %       scoreKey
+    %
+    %   Spectral Parameters (See Public Properties for additional details)
+    %         spectralBinWidth
+    %         noverlap
+    %         windowFunctionIndex                          
+    %         maxAnalysisFrequency = 25;   
+    %         bandsOfInterest
+    %         bandsOfInterestLabels
+    %         bandsOfInterestLatex
+    %         bandColors 
+    %
+    %   Coherence Parameters
+    %         COHERENCE_COMPUTE_COHERENCE = 0;
+    %         CREATE_COHERENCE_POWER_POINT_SUMMARY = 1;
+    %         
+    %   Figure Parameters
+    %         figPos = [-1919, 1, 1920, 1004]: Figure placement during run
+    %         map = jet(64): Default contour map
+    %         freqDisplayMax = 25: Maximumum display frequency
+    %         freqDisplayInc = 5;
+    %         folderSeperator = '\';
+    %         fontSize = 14;
+    %         imageResolution = 100;
+    %         artifactLineWidth = 1;
+    %         plotLineWidth = 2.0;   
+    %         
+    %   Operation Parameters
+    %         startFile = 1: Start analysis at file #
+    %
     % Constructor:
     %      stcObj = SpectralTrainClass(stcStruct)
-    %      
+    %      stcObj = SpectralTrainClass(stcStruct, bandFn)
+    %                 note: contructor with bandFn not tested yet
     % Public Methods:
     %      obj = computeSpectralTrain
     %
     % Static Methods:
     %      CreateSignalPPT (figs, pptFn, titleStr, imageResolution)
+    %      CloseChildrenFigures
+    %      bandStruct = LoadBandSettings(bandFn)
+    %
+    % User Configured/Seleted Output files
+    % 
+    %    Individual Subject Summaries
+    %
+    %        Detail Spectral Output (*.'signalLabel'.detail.spetral.xlsx):
+    %            Epoch by epoch spectral results. Artifact detection
+    %            information is included in this study.
+    %
+    %        Subject Band Summary (*.band.sum.xlsx):
+    %            User selected band summaries for REM/NREM
+    %    
+    %        Subject Total Power (*total.power.xlsx):
+    %            Total power across user defined spectral bands are
+    %            presented
+    %
+    %        Subject Average Spectral Output (*.spectral.ppt)
+    %            User selected spectral figures are saved to single power
+    %            point file. Up to seven types of figures can be generated.
+    %            The number of generated figure is dependent on the number
+    %            of signals and type of summaries requested. See the
+    %            parameter section for plotting flags.
+    %    
+    %    Summary Files
+    %
+    %         Run File List (*._FileList.xlsx):
+    %            Auto generated file list. There is a flag to turn off the
+    %            file generation, which allows for the generated file to be
+    %            edited. 
+    %    
+    %         File List with Checks (*EdfHeaderLabelSummaryWithChecks.xlsx)
+    %            Results of signal label check.  File provides a listing of
+    %            the signal labels available for each subject. The checks
+    %            were orignally develop and deployed as part of
+    %            BlockEdfSummarizeFig. BlockEdfSummarizeFig is a simple GUI 
+    %            for performing EDF and XML checks on large numbers of files. 
+    % 
+    %         Group Band Summary (*SpectralBandSummary.xlsx):
+    %            Spectral band summary for all subjects.  The spectral bands 
+    %            are user specified.
+    %
+    %         Group Spectral Summary (*GroupSpectralSummary.xlsx):
+    %            Contains average NREM/REM spectra and artifact detection
+    %            information for each subject.
     %
     %
-    % Version: 0.1.09
+    % Additional information can be found:
+    %
+    %   https://github.com/DennisDean/SpectralTrain/blob/master/README.md
+    %
+    %
+    % Related websites:
+    %
+    %   National Sleep Research Resource:
+    %      https://sleepdata.org/
+    %
+    %   Data Access and Visulation for Sleep Toolbox
+    %      https://github.com/DennisDean/DAVS-Toolbox/blob/master/README.md
+    %
+    %   BlockEdfSummarizeFig:
+    %      https://github.com/DennisDean/BlockEdfSummarizeFig/blob/master/README.md
+    %
+    %   Authors MATLAB File Exchange Contributions:
+    %      http://www.mathworks.com/matlabcentral/fileexchange/?term=authorid:113409
+    %
+    %   Sleep@Partners Healthcare, Legacy EDF Tools website:
+    %      http://sleep.partners.org/edf/
+    %
+    %
+    % Acknowledgements:
+    %
+    %   dirr:      Used to create EDF/XMl file lists for processing
+    %     http://www.mathworks.com/matlabcentral/fileexchange/8682-dirr--find-files-recursively-filtering-name--date-or-bytes-
+    %
+    %   moving:    Used to compute running band averages for the artifact detection computations.
+    %     http://www.mathworks.com/matlabcentral/fileexchange/8251-moving-averages---moving-median-etc
+    %
+    %   panel:     Used to create a summary figure for review.
+    %     http://www.mathworks.com/matlabcentral/fileexchange/20003-panel
+    %
+    %   saveppt2:  Used to create PPT summaries from MATLAB figures.
+    %     http://www.mathworks.com/matlabcentral/fileexchange/19322-saveppt2
+    %
+    %
+    % Funding:
+    %  
+    %   National Institute of Health Research Supplement to Promote 
+    %   Diversity in Health-Related Research for Individuals in Postdoctoral 
+    %   Training (NIH 3R01HL098433-02S1)
+    %   
+    %   Research agreement with Emma B. Bradley Hospital/Brown University, 
+    %   Sleep for Science Sleep Research  Laboratory funded by the Periodic 
+    %   Breathing Foundation. The Impact of Sleep and Breathing Dysregulation 
+    %   Measured from Plethysmography on ADHD Outcomes in Pre-pubescent Children
+    %    
+    %   National Intitutes of Health - National Heart, Lung, and Blood Institute
+    %   National Sleep Research Resource (HL114473)
+    %
+    %
+    % Version: 0.1.12
     %
     % ---------------------------------------------
     % Dennis A. Dean, II, Ph.D
@@ -57,7 +262,7 @@ classdef SpectralTrainClass
     % Boston, MA  02149
     %
     % File created: April 21, 2014
-    % Last updated: June 11, 2014 
+    % Last updated: July 9, 2014 
     %    
     % Copyright © [2014] The Brigham and Women's Hospital, Inc. THE BRIGHAM AND 
     % WOMEN'S HOSPITAL, INC. AND ITS AGENTS RETAIN ALL RIGHTS TO THIS SOFTWARE 
@@ -181,7 +386,7 @@ classdef SpectralTrainClass
         freqDisplayInc = 5;
         folderSeperator = '\';
         fontSize = 14;
-        imageResoultion = 100;
+        imageResolution = 100;
         artifactLineWidth = 1;
         plotLineWidth = 2.0;   
         
@@ -330,7 +535,7 @@ classdef SpectralTrainClass
             figPos = obj.figPos;
             folderSeperator = obj.folderSeperator;
             fontSize = obj.fontSize;
-            imageResoultion = obj.imageResoultion;
+            imageResolution = obj.imageResolution;
             artifactLineWidth = obj.artifactLineWidth;
             plotLineWidth = obj.plotLineWidth;
 
@@ -404,6 +609,7 @@ classdef SpectralTrainClass
                 
                 % Echo status to console
                 if or(isempty(checkValues), length(edfFileList)>sum(checkValues))
+                    checkIndexes = find(checkValues == 0)
                     errMsg = sprintf('Signal Check error: Check signal labels\n');
                     warning(errMsg);
                     return
@@ -1798,7 +2004,7 @@ classdef SpectralTrainClass
                         pptFn = strcat(edfFNames{f},'.spectral.ppt');
                         pptPathFn = strcat(StudyEdfResultDir, pptFn);
                         titleStr = sprintf('%s - %s', 'Spectral', edfFNames{f});
-                        imageResolution = imageResoultion;
+                        imageResolution = imageResolution;
                         
                         if obj.CREATE_POWER_POINT_SUMMARY == 1
                             obj.CreateSignalPPT ...
@@ -2017,7 +2223,7 @@ classdef SpectralTrainClass
                             figs = [figs;cohFid];
                             pptFn = strcat(StudyEdfResultDir, edfFNames{f},'.coherence.ppt');
                             titleStr = sprintf('%s - %s', 'Coherence', edfFNames{f});
-                            imageResolution = imageResoultion;
+                            imageResolution = imageResolution;
                             obj.CreateSignalPPT (cohFid, pptFn, titleStr, imageResolution)
                         end
                         
