@@ -48,7 +48,7 @@ Review our [standard operating procedure (SOP)](https://github.com/DennisDean/Sp
 
 *About*. Displays graphical user interface description and copyright notice.
 
-*Set Bands*. Load an Excel file with a list of spectral bands to analyze/report on.  Examples of the Excel spreadsheet can be found in the release section. The spectral analysis band summaries include slow oscilations (0.5-1 Hz), delta (1-4 Hz), theta (4-8 Hz), alpha (8-12 Hz), sigma (12-15 Hz), slow sigma (12-13.5), fast sigma (13.5-15 Hz) and beta (15-20 Hz). The default Excel file can be downloaded from [here](https://github.com/DennisDean/SpectralTrainFig/releases/download/0.1.00/bandAnalysisSettings.xlsx).
+*Set Bands*. Load an Excel file with a list of spectral bands to analyze/report on.  Examples of the Excel spreadsheet can be found in the release section. The spectral analysis band summaries include slow oscillations (0.5-1 Hz), delta (1-4 Hz), theta (4-8 Hz), alpha (8-12 Hz), sigma (12-15 Hz), slow sigma (12-13.5), fast sigma (13.5-15 Hz) and beta (15-20 Hz). The default Excel file can be downloaded from [here](https://github.com/DennisDean/SpectralTrainFig/releases/download/0.1.00/bandAnalysisSettings.xlsx).
  
 *Bands*. Start batch processing. Compute and report band summaries by subject and create a summary across subjects.
 
