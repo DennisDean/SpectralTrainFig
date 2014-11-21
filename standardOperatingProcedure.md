@@ -6,7 +6,7 @@ Procedures for using SpectralTrainFig to analyze sleep cohort data are described
 
 ## Scope
 
-The document describes responsibilites, procedures and references relative to the flow of information starting with identifying a dataset to analayze to making data available for data analysis.
+The document describes responsibilites, procedures and references relative to the flow of information starting with identifying a dataset, analyzing a dataset, and results available for analysis.
 
 ## Responsiblities
 
@@ -96,6 +96,11 @@ Review the MS PowerPoint Summaries and all of the group summary files (ex. bands
 
 ## References
 [SpectralTrainFig](https://github.com/DennisDean/SpectralTrainFig)
+
+
 [BlockEdfSummarizeFig](https://github.com/DennisDean/BlockEdfSummarizeFig)
+
+
 Manual Adjudication and Training Manual
+
 
