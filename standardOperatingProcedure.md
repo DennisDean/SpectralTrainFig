@@ -103,4 +103,12 @@ Review the MS PowerPoint Summaries and all of the group summary files (ex. bands
 
 Manual Adjudication and Training Manual
 
+Validation Report/Publication
+
+SOF Spectral Analysis Procedure Summary
+
+SpectralTrainFig Program Description
+
+Method Section Text
+
 
