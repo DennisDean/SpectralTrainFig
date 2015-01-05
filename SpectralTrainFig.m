@@ -19,11 +19,29 @@ function varargout = SpectralTrainFig(varargin)
 %      instance to run (singleton)".
 %
 %
-% GUI provides user easy acctess to SpectralTrainClass, which computes
+% GUI provides user easy access to SpectralTrainClass, which computes
 % spectral and coherence from EDF and Annotation (XML) files stored in a
-% folder.
+% folder. See acknowledgements in 'SpectralTrainClass.m'
 %
-% Version: 0.1.01
+% Additional information can be found:
+%   https://github.com/DennisDean/SpectralTrainFig/blob/master/README.md
+%
+% Related websites:
+%
+%   National Sleep Research Resource:
+%      https://sleepdata.org/
+%
+%   Data Access and Visulation for Sleep Toolbox
+%      https://github.com/DennisDean/DAVS-Toolbox/blob/master/README.md
+%
+%   Authors MATLAB File Exchange Contributions:
+%      http://www.mathworks.com/matlabcentral/fileexchange/?term=authorid:113409
+%
+%   Sleep@Partners Healthcare, Legacy EDF Tools website:
+%      http://sleep.partners.org/edf/
+%
+%
+% Version: 0.1.03
 %
 % ---------------------------------------------
 % Dennis A. Dean, II, Ph.D
@@ -35,7 +53,7 @@ function varargout = SpectralTrainFig(varargin)
 % Boston, MA  02149
 %
 % File created: April 21, 2014
-% Last updated: June 11, 2014 
+% Last updated: June 30, 2014 
 %    
 % Copyright © [2014] The Brigham and Women's Hospital, Inc. THE BRIGHAM AND 
 % WOMEN'S HOSPITAL, INC. AND ITS AGENTS RETAIN ALL RIGHTS TO THIS SOFTWARE 

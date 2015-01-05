@@ -107,7 +107,8 @@ classdef SpectralTrainClass
     %       EXPORT_SPECTRAL_DETAILS = 1;
     %       EXPORT_TOTAL_POWER = 0;
     %       VALIDATION_PLOTS = 0;
-    %       CREATE_POWER_POINT_SUMMARY = 1;   
+    %       CREATE_POWER_POINT_SUMMARY = 1;
+    %       WRITE_SIGNAL_SUMMARY_TO_SCREEN = 1;
     %
     %    Sleep Scoring Parameter (See Public Properties for additional details)
     %       scoreKey
@@ -310,6 +311,7 @@ classdef SpectralTrainClass
         EXPORT_TOTAL_POWER = 0;
         VALIDATION_PLOTS = 0;
         CREATE_POWER_POINT_SUMMARY = 1;
+        WRITE_SIGNAL_SUMMARY_TO_SCREEN = 1;
         
         % Coherence parameters
         COHERENCE_COMPUTE_COHERENCE = 0;
@@ -393,7 +395,7 @@ classdef SpectralTrainClass
         % Operation Parameters
         startFile = 1;
     end
-    %------------------------------------------------ Dependent Properties
+    %------------------------------------------------- Dependent Properties
     properties (Dependent = true)
     end
     %--------------------------------------------------- Private Properties
@@ -602,14 +604,14 @@ classdef SpectralTrainClass
                 tempXlsFileContentCheckSummaryOut = ...
                     strcat(StudyEdfResultDir, xlsFileContentCheckSummaryOut);
                 besObj = BlockEdfSummarizeClass(checkFile, tempXlsFileContentCheckSummaryOut);
-                besObj = besObj.summarizeSignalLabels(requiredSignals);
+                besObj = besObj.summarizeSignalLabels(unique(requiredSignals));
                 
                 % Get check results
                 checkValues = besObj.checkValues;
                 
                 % Echo status to console
                 if or(isempty(checkValues), length(edfFileList)>sum(checkValues))
-                    checkIndexes = find(checkValues == 0)
+                    checkIndexes = find(checkValues == 0);
                     errMsg = sprintf('Signal Check error: Check signal labels\n');
                     warning(errMsg);
                     return
@@ -692,6 +694,11 @@ classdef SpectralTrainClass
                     edfObj.SWAP_MIN_MAX = 1;       % Fix SOF data
                     edfObj = edfObj.blockEdfLoad;  % Load data
 
+                    % Write Signal Summary to Screen
+                    if obj.WRITE_SIGNAL_SUMMARY_TO_SCREEN == 1;
+                        
+                    end
+                    
                     % Reference signal
                     signalCell = edfObj.edf.signalCell;
                     if ~isempty(referenceSignals)
@@ -879,10 +886,11 @@ classdef SpectralTrainClass
                             -dataAvg;...            
 
                         % Compute overall spectrum
+                        noverlapPts = floor(SR*(noverlap*spectralBinWidth - epochWidth)/noverlap);
                         data = reshape(dataZeroed, 1, ...
                             numPtsPer30secEpoch, returnedNum30SecEpochs);
                         [pxx,freq,pxxc] = ...
-                            pwelch(data,spectralWindowFun,noverlap,spectralBinWidth*SR,SR);
+                            pwelch(data,spectralWindowFun,noverlapPts,spectralBinWidth*SR,SR);
 
                         % Set frequency display 
                         fIdx = find(freq<= freqDisplayMax);
@@ -920,22 +928,28 @@ classdef SpectralTrainClass
                             fprintf('\t\tComputing spectrogram for %s\n',signalLabels{s});
 
                             % Zero Signal by 30 second epochs
-                            dataAvg = reshape(signalCell{s}(1:numPtsPer30secEpoch*returnedNum30SecEpochs),...
-                                returnedNum30SecEpochs, numPtsPer30secEpoch);
-                            dataAvg =reshape((mean(dataAvg,2)*ones(1, numPtsPer30secEpoch))', ...
+                            % Following fix reccomended by Shaun Purcell
+                            %dataAvg = reshape(signalCell{s}(1:numPtsPer30secEpoch*returnedNum30SecEpochs),...
+                            %    returnedNum30SecEpochs, numPtsPer30secEpoch);
+                            %dataAvg =reshape((mean(dataAvg,2)*ones(1, numPtsPer30secEpoch))', ...
+                            %    returnedNum30SecEpochs*numPtsPer30secEpoch,1);
+                            dataAvg = reshape(signalCell{s}(1:numPtsPer30secEpoch*returnedNum30SecEpochs), ...
+                                numPtsPer30secEpoch, returnedNum30SecEpochs );
+                            dataAvg = reshape((transpose(mean(dataAvg,1))*ones(1, numPtsPer30secEpoch))', ...
                                 returnedNum30SecEpochs*numPtsPer30secEpoch,1);
                             dataZeroed = ...
                                 signalCell{s}(1:numPtsPer30secEpoch*returnedNum30SecEpochs)...
                                 -dataAvg;...
-                            dataZeroed = ...
-                                signalCell{s}(1:numPtsPer30secEpoch*returnedNum30SecEpochs)...
-                                -0;...
+                            %dataZeroed = ...
+                            %    signalCell{s}(1:numPtsPer30secEpoch*returnedNum30SecEpochs)...
+                            %    -0;...
                                 
                             % Compute spectrogram with pwelch method
+                            noverlapPts = floor(SR*(noverlap*spectralBinWidth - epochWidth)/noverlap);
                             signalData = reshape(dataZeroed, 1, ...
                                 numPtsPer30secEpoch, returnedNum30SecEpochs);
                             pwelchF = @(x)pwelchWrap((signalData(:,:,x)),...
-                                spectralWindowFun,noverlap,spectralBinWidth*SR,SR);
+                                spectralWindowFun,noverlapPts,spectralBinWidth*SR,SR);
                             pxxCell{s} = cell2mat(arrayfun(pwelchF, ...
                                 [1:returnedNum30SecEpochs],'UniformOutput', 0));
 
@@ -2343,7 +2357,7 @@ classdef SpectralTrainClass
             end
         end
     end
-     %------------------------------------------------ Dependent Properties
+    %------------------------------------------------ Dependent Properties
     methods(Static)   
        %--------------------------------------------------- CreateSignalPPT
        function CreateSignalPPT (figs, pptFn, titleStr, imageResolution)
