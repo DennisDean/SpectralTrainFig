@@ -285,6 +285,9 @@ classdef SpectralTrainClass
                                         % 3: Substract reference signal
                                         %    average
         
+        % Data identification
+        xmlSuffix = '-profusion.xml';
+                                        
         % Artifact Detection Threshold
         artifactTH = [2.5 2.0];
         
@@ -381,6 +384,9 @@ classdef SpectralTrainClass
             [ 230  224  236 ]...
         ]/255;   
         
+        % Coherence Parameters
+        cohFreqOuputIncrement = 0.2;  
+        
         % Figure Position
         figPos = [-1919, 1, 1920, 1004];
         map = jet(64);
@@ -397,6 +403,8 @@ classdef SpectralTrainClass
     end
     %------------------------------------------------- Dependent Properties
     properties (Dependent = true)
+        % Coherence Parameters
+        cohOutFrequency
     end
     %--------------------------------------------------- Private Properties
     properties (Access = protected)
@@ -480,8 +488,15 @@ classdef SpectralTrainClass
         %--------------------------------------------- computeSpectralTrain
         function obj = computeSpectralTrain(varargin)
             
-            % Proces input
-            obj = varargin{1};
+            % Process input
+            if nargin == 1
+                % Proces input
+                obj = varargin{1};
+            elseif nargin == 2
+                % Proces input
+                obj = varargin{1};
+                matchedCell = varargin{2};
+            end
 
             % Analysis Flags
             GENERATE_FILE_LIST = obj.GENERATE_FILE_LIST;
@@ -580,17 +595,37 @@ classdef SpectralTrainClass
             if GENERATE_FILE_LIST == 1
                 % Echo status to console
                 fprintf('Getting matched EDF/XML files\n');
+                
+                % Get XML suffix
+                xmlSuffix = obj.xmlSuffix; 
 
                 % Write excel output with no arguments 
-                GetMatchedSleepFiles(StudyEdfDir, checkFile);
+                % GetMatchedSleepFiles(StudyEdfDir, checkFile);
+                GetMatchedSleepEdfXmlFiles...
+                    (StudyEdfDir, checkFile, StudyEdfDir, xmlSuffix);
                 
                 % Save file location information
-                matchedCell = GetMatchedSleepFiles(StudyEdfDir, checkFile);
+                % matchedCell = GetMatchedSleepFiles(StudyEdfDir, checkFile);
+                matchedCell = GetMatchedSleepEdfXmlFiles...
+                    (StudyEdfDir, checkFile, StudyEdfDir, xmlSuffix);
                 matchedCell = matchedCell{1};
                 edfFolderList = matchedCell(2:end, 6);
                 xmlFolderList = matchedCell(2:end, 11);
                 edfFileList = matchedCell(2:end, 2);
                 xmlFileList = matchedCell(2:end, 7);
+            else
+                % Use file information passed in
+                edfFolderList = matchedCell(2:end, 6);
+                xmlFolderList = matchedCell(2:end, 11);
+                edfFileList = matchedCell(2:end, 2);
+                xmlFileList = matchedCell(2:end, 7);   
+                
+                % Add sting terminator 
+                addSeperatorF = @(x)strcat(x,'\');
+                edfFolderList= cellfun(addSeperatorF, edfFolderList, ...
+                    'UniformOutput', 0);
+                xmlFolderList = cellfun(addSeperatorF, xmlFolderList, ...
+                    'UniformOutput', 0);
             end
 
             %% Test files can be opened and signals are present
@@ -610,7 +645,7 @@ classdef SpectralTrainClass
                 checkValues = besObj.checkValues;
                 
                 % Echo status to console
-                if or(isempty(checkValues), length(edfFileList)>sum(checkValues))
+                if or(isempty(checkValues), sum(checkValues == 0)> 0)
                     checkIndexes = find(checkValues == 0);
                     errMsg = sprintf('Signal Check error: Check signal labels\n');
                     warning(errMsg);
@@ -647,7 +682,7 @@ classdef SpectralTrainClass
                 epochWidth = 30;
 
                 % Load annotaion information from xls file
-                [num txt raw] = xlsread(checkFile);
+                [num, txt raw] = xlsread(checkFile);
                 xmlFnIndex = 7;
                 xmlPathIndex =11;
                 xmlFNames = txt(2:end, xmlFnIndex);
@@ -1779,6 +1814,9 @@ classdef SpectralTrainClass
                                 % Add legend
                                 legend('NREM','REM' );
                                 legend('boxoff')
+                                
+                                % Use fix figure
+                                fixfig(fid, 0);
                             end % Plot Comprehensive Spectral Summary Panel
                 
 
@@ -2055,7 +2093,10 @@ classdef SpectralTrainClass
                         epochPt = epoch*SR;
                         numCompleteEpochs = floor(numSignalPts/epochPt);
                         lastCompleteEpochPt = numCompleteEpochs*epochPt;
-
+                        
+                        % Compute output frequency
+                        cohOutFrequency = obj.cohOutFrequency;
+                        
                         % Calculate average coherence for reference
                         s1 = signalCell{1}(1:numPtsPer30secEpoch*returnedNum30SecEpochs);
                         s2 = signalCell{2}(1:numPtsPer30secEpoch*returnedNum30SecEpochs);
@@ -2075,6 +2116,7 @@ classdef SpectralTrainClass
                             s2 = reshape(s2(1:lastCompleteEpochPt), 1, epochPt, numCompleteEpochs);
 
                             % Compute and Store Coherence
+                            % cohF = @(x)mscohereWrap(s1(:,:,x), s2(:,:,x),hanning(1000),0,1000,SR);
                             cohF = @(x)mscohereWrap(s1(:,:,x), s2(:,:,x),hanning(5*SR),0,5*SR,SR);
                             CxyEpoch = cell2mat(arrayfun(cohF, [1:numCompleteEpochs],'UniformOutput', 0));
                             CxyCell{c} = CxyEpoch;
@@ -2357,7 +2399,14 @@ classdef SpectralTrainClass
             end
         end
     end
-    %------------------------------------------------ Dependent Properties
+    %------------------------------------------------- Dependent Properties
+    methods
+       %--------------------------------------------------- cohOutFrequency
+       function value = get.cohOutFrequency(obj)
+           value = [0:obj.cohFreqOuputIncrement:obj.maxAnalysisFrequency];
+       end
+    end
+    %--------------------------------------------------------------- Static
     methods(Static)   
        %--------------------------------------------------- CreateSignalPPT
        function CreateSignalPPT (figs, pptFn, titleStr, imageResolution)

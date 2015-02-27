@@ -69,7 +69,7 @@ function varargout = SpectralTrainFig(varargin)
 
 % Edit the above text to modify the response to help SpectralTrainFig
 
-% Last Modified by GUIDE v2.5 19-Jun-2014 11:43:58
+% Last Modified by GUIDE v2.5 27-Feb-2015 10:53:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -107,13 +107,22 @@ set(handles.e_description_analysis_description, 'String',' ');
 set(handles.e_description_output_file_prefix, 'String',' ');
 set(handles.e_description_data_folder, 'String',' ');
 set(handles.e_description_result_folder, 'String',' ');
+set(handles.e_analysis_sr_paritioning_varaible, 'String','{ }');
 set(handles.e_analysis_parameters_analysis_signals, 'String',' ');
 set(handles.e_analysis_parameters_reference_signals, 'String',' ');
+set(handles.e_description_xml_suffix, 'String','-profusion.xml');
 
 % Inactivate buttons untill analysis folders are set
 set(handles.pb_fig_band, 'enable','off');
 set(handles.pb_fig_go_min, 'enable','off');
 set(handles.pb_fig_go, 'enable','off');
+set(handles.pb_fig_all_lists, 'enable','off');
+
+% Inactivate button until data is loaded
+set(handles.pb_fig_go_min, 'enable','off');
+set(handles.pb_fig_go, 'enable','off');
+set(handles.pb_fig_band, 'enable','off');
+set(handles.pb_fig_all_lists, 'enable','off');
 
 % Set Defaults to SOF
 set(handles.e_description_analysis_description, 'String','Spectral Analysis');
@@ -126,17 +135,14 @@ monitorPositionsStrCell = ConvertMonitorPosToFigPos;
 set(handles.pm_analysis_parameters_monitor_id, ...
     'String', monitorPositionsStrCell);
 
-% Inactivate button until data is loaded
-set(handles.pb_fig_go_min, 'enable','off');
-set(handles.pb_fig_go, 'enable','off');
-
 % Define GUI variables
 handles.folderSeperator = '\';
 handles.data_folder_path = cd;
 handles.data_folder_path_is_selected = 0;
 handles.result_folder_path = cd;
 handles.result_folder_path_is_selected = 0;
-
+handles.edfFileListName = '';
+handles.splitFileListCellwLabels = {};
 
 % Define Band Summary files
 handles.band_setting_fn = '';
@@ -238,6 +244,7 @@ stcStruct.StudyBandSummary = strcat( ...
     outputFilePrefix, 'BandSummary.xlsx');
 stcStruct.checkFile = strcat(stcStruct.StudyEdfResultDir, ...
         stcStruct.StudyEdfFileListResultsFn);
+
     
 % Create class object
 stcObj = SpectralTrainClass(stcStruct);
@@ -260,6 +267,10 @@ stcObj.CREATE_POWER_POINT_SUMMARY = 1;
 stcObj.EXPORT_SPECTRAL_DETAILS = 1;
 stcObj.COMPUTE_TOTAL_POWER = 1;
 stcObj.EXPORT_TOTAL_POWER = 1;
+
+% Set file identification parameters
+xmlSuffix = get(handles.e_description_xml_suffix, 'String');
+stcObj.xmlSuffix = xmlSuffix;
 
 % Spectral parameters
 if (pm_analysis_spectral_settings == 2)
@@ -421,6 +432,7 @@ if folder_is_selected == 1
         set(handles.pb_fig_band, 'enable','on');
         set(handles.pb_fig_go_min, 'enable','on');
         set(handles.pb_fig_go, 'enable','on');
+        set(handles.pb_fig_all_lists, 'enable','on');
     end
     
     % Save new data
@@ -456,6 +468,7 @@ if folder_is_selected == 1
         set(handles.pb_fig_band, 'enable','on');
         set(handles.pb_fig_go_min, 'enable','on');
         set(handles.pb_fig_go, 'enable','on');
+        set(handles.pb_fig_all_lists, 'enable','on');
     end
     
     % Save new data
@@ -576,6 +589,10 @@ stcStruct.checkFile = strcat(stcStruct.StudyEdfResultDir, ...
 % Create class object
 stcObj = SpectralTrainClass(stcStruct);
 
+% Set file identification parameters
+xmlSuffix = get(handles.e_description_xml_suffix, 'String');
+stcObj.xmlSuffix = xmlSuffix;
+
 % Define options for minimum reccomendedoutput 
 stcObj.referenceMethodIndex = referenceMethod;
 stcObj.SUMMARIZE_BANDS = 1;
@@ -592,7 +609,7 @@ stcObj.artifactTH = [deltaTh betaTh];
 stcObj.figPos = monitorID;
 stcObj.GENERATE_FILE_LIST = 1;
 stcObj.CREATE_POWER_POINT_SUMMARY = 1;
-stcObj.EXPORT_SPECTRAL_DETAILS = 0;
+stcObj.EXPORT_SPECTRAL_DETAILS = 1;
 stcObj.COMPUTE_TOTAL_POWER = 0;
 stcObj.EXPORT_TOTAL_POWER = 0;
 
@@ -945,4 +962,294 @@ function pb_close_all_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-SpectralTrainClass.CloseChildrenFigures
+
+filePartitioningLabel = eval(SpectralTrainClass.CloseChildrenFigures);
+
+
+
+% --- Executes on button press in pb_fig_all_lists.
+function pb_fig_all_lists_Callback(hObject, eventdata, handles)
+% hObject    handle to pb_fig_all_lists (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%------------------------------------------------------------ Get File List
+
+% Get Path/File Information
+summaryFilePath = handles.result_folder_path;
+handles.edfFileListName = get(handles.e_description_output_file_prefix, 'String');
+edfFileListName = strcat(summaryFilePath, '\',handles.edfFileListName,'_Edf_File_List.xls');
+edf_pn = handles.data_folder_path;
+%edf_pn = edf_pn(1:end-1);
+edf_FolderName = handles.data_folder_path;
+
+% Echo Status to console
+fprintf('\nStarting search for EDF files in folder: %s\n\n', ...
+    edf_FolderName);
+
+% Generate Matched files    
+GetMatchedSleepEdfXmlFiles(edf_pn, edfFileListName);
+splitFileListCellwLabels = ...
+        GetMatchedSleepEdfXmlFiles(edf_pn, edfFileListName);
+    
+% Save file list
+handles.splitFileListCellwLabels = splitFileListCellwLabels;
+
+% ----------------------------------------- Check sampling rate information
+
+% Get Path/File Information
+summaryFilePath = handles.result_folder_path;
+handles.edfFileListName = get(handles.e_description_output_file_prefix, 'String');
+edfFileListName = strcat(summaryFilePath, handles.edfFileListName,'_Edf_File_List.xls');
+edfFileListNamePrefix = strcat(summaryFilePath, '\', handles.edfFileListName,'_Edf_File_List');
+
+% Generate EDF File list
+summaryFilePath = strcat(handles.result_folder_path, '\');
+handles.edfFileListName = get(handles.e_description_output_file_prefix, 'String');
+edfFileListName = strcat(summaryFilePath, handles.edfFileListName,'_Edf_File_List.xls');
+
+% Get Path/File Information
+summaryFilePath = handles.result_folder_path;
+summaryFileName = get(handles.e_description_output_file_prefix, 'String');
+summaryFileName = strcat(summaryFilePath, '\', summaryFileName,'_FilePartitionSummary.xls');
+
+% XLS File name
+xlsFileList = edfFileListName;
+xlsFileSummaryOut = summaryFileName; 
+
+% Get Signal Summary
+filePartitioningLabel = eval(get(handles.e_analysis_sr_paritioning_varaible, 'String'));
+
+% Check if partioining is necessary
+if ~isempty(filePartitioningLabel)
+    
+    % Update User
+    fprintf('\nSegmenting file list\n');
+
+    % Create class
+    besObj = BlockEdfSummarizeClass(xlsFileList, xlsFileSummaryOut);
+    besObj.filePartitioningLabel = filePartitioningLabel;
+    besObj.splitFileListCellwLabels = handles.splitFileListCellwLabels;
+    besObj.edfFileListNamePrefix = edfFileListNamePrefix;
+    besObj = besObj.segmentFileList;
+
+    % Get sampling information
+    uniqueSamplingRates = besObj.uniqueSamplingRates;
+    fileNameCell = besObj.fileNameCell;
+    fileListCell = besObj.fileListCell;
+
+    % Update User
+    for f = 1:length(uniqueSamplingRates)
+        fprintf('Segmented files written to (%.0f):\t%s\n', ...
+            uniqueSamplingRates(f), fileNameCell{f});
+    end
+
+    %--------------------------------------------------------- Processing Steps
+    for f = 1:length(uniqueSamplingRates)
+        % Echo status to console
+        fprintf('\n\nProcessing %.0f of %.0f file (Sampling Rate = %.0f)\n%s\n', ...
+            f, length(uniqueSamplingRates), uniqueSamplingRates(f), fileNameCell{f});  
+        
+        
+        % Set Partitioned file varaibles
+        matchedCell = fileListCell{f};
+        checkFile = fileNameCell{f};
+
+        % Get handle information
+        band_setting_fn = handles.band_setting_fn;
+        band_setting_pn = handles.band_setting_pn;
+        band_setting_fn_selected = handles.band_setting_fn_selected;
+
+        % Get Analysis Information from interface
+        analysisDescription = ...
+            get(handles.e_description_analysis_description, 'String');
+        outputFilePrefix = ...
+            get(handles.e_description_output_file_prefix, 'String');
+        dataFolder =  strcat(...
+            get(handles.e_description_data_folder, 'String'),...
+            handles.folderSeperator);
+        resultFolder =  strcat(...
+            get(handles.e_description_result_folder, 'String'), ...
+            handles.folderSeperator);
+        analysisSignals =  eval(...
+            get(handles.e_analysis_parameters_analysis_signals, 'String'));
+        referenceSignals =  eval(......
+            get(handles.e_analysis_parameters_reference_signals, 'String'));
+        referenceMethod = get(handles.pm_reference_method, 'Value');
+        deltaThStr = ...
+            get(handles.pm_analysis_parameters_delta, 'String');
+        deltaTh = str2num(deltaThStr{...
+            get(handles.pm_analysis_parameters_delta, 'Value')});
+        betaThStr =  ...
+            get(handles.pm_analysis_parameters_beta, 'String');
+        betaTh = str2num(betaThStr{...
+            get(handles.pm_analysis_parameters_beta, 'Value')});
+        monitorIDStr =  ...
+            get(handles.pm_analysis_parameters_monitor_id, 'String');
+        monitorID = eval(monitorIDStr{...
+            get(handles.pm_analysis_parameters_monitor_id, 'Value')});
+        cb_fig_compute_coherence =  ...
+            get(handles.cb_fig_compute_coherence, 'Value');
+        pm_analysis_spectral_settings =  ...
+            get(handles.pm_analysis_spectral_settings, 'Value');
+        analysisStartStr =  ...
+            get(handles.pm_analysis_start, 'String');
+        startFile = str2num(analysisStartStr{...
+            get(handles.pm_analysis_start, 'Value')});
+
+        % Create spectral analysis structure
+        stcStruct.analysisDescription = analysisDescription;
+        stcStruct.StudyEdfFileListResultsFn = strcat(outputFilePrefix, ...
+            '_FileList.xlsx');
+        stcStruct.StudyEdfDir = dataFolder; 
+        stcStruct.StudyEdfResultDir = resultFolder;
+        stcStruct.xlsFileContentCheckSummaryOut =  strcat(outputFilePrefix, ...
+            '_FileLisWithCheck.xlsx');
+        stcStruct.xlsFileContentCheckSummaryOut =  strcat(outputFilePrefix, ...
+            '_', num2str(uniqueSamplingRates(f)),'_FileLisWithCheck.xlsx');
+        stcStruct.analysisSignals = analysisSignals;
+        stcStruct.referenceSignals = referenceSignals;
+        stcStruct.requiredSignals = [analysisSignals referenceSignals];
+        stcStruct.StudySpectrumSummary = strcat( ...
+            outputFilePrefix, 'SpectralSummary.xlsx');
+        stcStruct.StudySpectrumSummary = strcat( ...
+            outputFilePrefix, '_', num2str(uniqueSamplingRates(f)), ...
+            '_SpectralSummary.xlsx');
+        stcStruct.StudyBandSummary = strcat( ...
+            outputFilePrefix, '_BandSummary.xlsx');
+        stcStruct.StudyBandSummary = strcat( ...
+            outputFilePrefix, '_', num2str(uniqueSamplingRates(f)), ...
+            '_BandSummary.xlsx');
+        stcStruct.checkFile = strcat(stcStruct.StudyEdfResultDir, ...
+                stcStruct.StudyEdfFileListResultsFn);
+        stcStruct.checkFile = checkFile;
+
+        % Create class object
+        stcObj = SpectralTrainClass(stcStruct);
+
+        % Define options for minimum reccomendedoutput 
+        stcObj.referenceMethodIndex = referenceMethod;
+        stcObj.SUMMARIZE_BANDS = 1;
+        stcObj.EXPORT_BAND_SUMMARY = 1;
+        stcObj.PLOT_CALIBRATION_TEST = 0;
+        stcObj.PLOT_HYPNOGRAM = 1;
+        stcObj.PLOT_ARTIFACT_SUMMARY = 1;
+        stcObj.PLOT_SPECTRAL_SUMMARY = 1;
+        stcObj.PLOT_NREM_REM_SPECTRUM = 1;
+        stcObj.OUTPUT_AVERAGE_SPECTROGRAMS = 1;
+        stcObj.PLOT_BAND_ACTIVITY = 1;
+        stcObj.artifactTH = [deltaTh betaTh];
+        stcObj.figPos = monitorID;
+        stcObj.GENERATE_FILE_LIST = 0;
+        stcObj.CREATE_POWER_POINT_SUMMARY = 1;
+        stcObj.EXPORT_SPECTRAL_DETAILS = 1;
+        stcObj.COMPUTE_TOTAL_POWER = 1;
+        stcObj.EXPORT_TOTAL_POWER = 1;
+
+        % Set file identification parameters
+        xmlSuffix = get(handles.e_description_xml_suffix, 'String');
+        stcObj.xmlSuffix = xmlSuffix;
+        
+        % Spectral parameters
+        if (pm_analysis_spectral_settings == 2)
+            % Switch to SHHS settings
+            stcObj.noverlap = 6;
+            stcObj.spectralBinWidth = 5;
+            stcObj.windowFunctionIndex = 3; % Hanning
+            stcObj.AVERAGE_ADJACENT_BANDS = 0;
+        end
+
+        % Band settings
+        if band_setting_fn_selected == 1
+            % Load band structure
+            bandFn = strcat(band_setting_pn, band_setting_fn);
+            bandStruct = stcObj.LoadBandSettings(bandFn);
+
+            % Set band variables
+            stcObj.bandsOfInterest = bandStruct.bandsOfInterest;
+            stcObj.bandsOfInterestLabels = bandStruct.bandsOfInterestLabels;
+            stcObj.bandsOfInterestLatex = bandStruct.bandsOfInterestLatex;
+            stcObj.bandColors = bandStruct.bandColors;
+        end
+
+        % Compute Coherence
+        stcObj.COHERENCE_COMPUTE_COHERENCE = cb_fig_compute_coherence;
+
+        % Set start iterion
+        stcObj.startFile = startFile;
+
+        % Execute analysis
+        stcObj = stcObj.computeSpectralTrain(matchedCell);
+    end
+else
+    % Process using the single file version
+    pb_fig_go_Callback(hObject, eventdata, handles) 
+end
+
+% --- Executes on selection change in pm_partitioned_file_list.
+function pm_partitioned_file_list_Callback(hObject, eventdata, handles)
+% hObject    handle to pm_partitioned_file_list (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns pm_partitioned_file_list contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from pm_partitioned_file_list
+
+
+% --- Executes during object creation, after setting all properties.
+function pm_partitioned_file_list_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to pm_partitioned_file_list (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function e_analysis_sr_paritioning_varaible_Callback(hObject, eventdata, handles)
+% hObject    handle to e_analysis_sr_paritioning_varaible (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of e_analysis_sr_paritioning_varaible as text
+%        str2double(get(hObject,'String')) returns contents of e_analysis_sr_paritioning_varaible as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function e_analysis_sr_paritioning_varaible_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to e_analysis_sr_paritioning_varaible (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function e_description_xml_suffix_Callback(hObject, eventdata, handles)
+% hObject    handle to e_description_xml_suffix (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of e_description_xml_suffix as text
+%        str2double(get(hObject,'String')) returns contents of e_description_xml_suffix as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function e_description_xml_suffix_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to e_description_xml_suffix (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
