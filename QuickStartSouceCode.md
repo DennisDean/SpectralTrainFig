@@ -1,7 +1,7 @@
 Getting Started
 ==================
 
-#### BlockEdfSpectralTrainFig - Sourcecode
+#### BlockEdfSpectralTrainFig - Source code
 The steps involved in setting up spectral analysis from the source code is described below.
 
 ##### Steps:
