@@ -69,9 +69,10 @@ function varargout = SpectralTrainFig(varargin)
 
 % Edit the above text to modify the response to help SpectralTrainFig
 
-% Last Modified by GUIDE v2.5 27-Feb-2015 10:53:46
+% Last Modified by GUIDE v2.5 19-Apr-2016 13:41:50
 
 % Begin initialization code - DO NOT EDIT
+clc
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
@@ -110,25 +111,26 @@ set(handles.e_description_result_folder, 'String',' ');
 set(handles.e_analysis_sr_paritioning_varaible, 'String','{ }');
 set(handles.e_analysis_parameters_analysis_signals, 'String',' ');
 set(handles.e_analysis_parameters_reference_signals, 'String',' ');
-set(handles.e_description_xml_suffix, 'String','-profusion.xml');
+set(handles.edit12, 'String',' ');
+set(handles.e_description_xml_suffix, 'String','-.xml');
 
-% Inactivate buttons untill analysis folders are set
+% Inactivate buttons until analysis folders are set
 set(handles.pb_fig_band, 'enable','off');
 set(handles.pb_fig_go_min, 'enable','off');
 set(handles.pb_fig_go, 'enable','off');
 set(handles.pb_fig_all_lists, 'enable','off');
+set(handles.edit12, 'enable', 'on');
 
-% Inactivate button until data is loaded
-set(handles.pb_fig_go_min, 'enable','off');
-set(handles.pb_fig_go, 'enable','off');
-set(handles.pb_fig_band, 'enable','off');
-set(handles.pb_fig_all_lists, 'enable','off');
 
 % Set Defaults to SOF
 set(handles.e_description_analysis_description, 'String','Spectral Analysis');
 set(handles.e_description_output_file_prefix, 'String','study__');
 set(handles.e_analysis_parameters_analysis_signals, 'String','{''C3''}');
 set(handles.e_analysis_parameters_reference_signals, 'String','{''A2''}');
+set(handles.edit12, 'String','{''ECG''}');
+
+% Set Default to not perform ECG artifact decontamination
+set(handles.checkbox2, 'Value',0)
 
 % Get Monitor Positions and set to first monitor
 monitorPositionsStrCell = ConvertMonitorPosToFigPos;
@@ -226,7 +228,10 @@ analysisStartStr =  ...
     get(handles.pm_analysis_start, 'String');
 startFile = str2num(analysisStartStr{...
     get(handles.pm_analysis_start, 'Value')});
-
+denoise_ecg =  ...
+    get(handles.checkbox2, 'Value');
+ecg_name=eval(...
+    get(handles.edit12, 'String'));
 % Create spectral analysis structure
 stcStruct.analysisDescription = analysisDescription;
 stcStruct.StudyEdfFileListResultsFn = strcat(outputFilePrefix, ...
@@ -237,6 +242,8 @@ stcStruct.xlsFileContentCheckSummaryOut =  strcat(outputFilePrefix, ...
     '_FileLisWithCheck.xlsx');
 stcStruct.analysisSignals = analysisSignals;
 stcStruct.referenceSignals = referenceSignals;
+stcStruct.denoiseEcg=denoise_ecg;
+stcStruct.ecgName=ecg_name;
 stcStruct.requiredSignals = [analysisSignals referenceSignals];
 stcStruct.StudySpectrumSummary = strcat( ...
     outputFilePrefix, 'SpectralSummary.xlsx');
@@ -434,10 +441,11 @@ if folder_is_selected == 1
         set(handles.pb_fig_go, 'enable','on');
         set(handles.pb_fig_all_lists, 'enable','on');
     end
-    
+
     % Save new data
     guidata(hObject, handles);
 end
+
 % --- Executes on button press in pb_description_result_folder.
 function pb_description_result_folder_Callback(hObject, eventdata, handles)
 % hObject    handle to pb_description_result_folder (see GCBO)
@@ -567,7 +575,11 @@ analysisStartStr =  ...
     get(handles.pm_analysis_start, 'String');
 startFile = str2num(analysisStartStr{...
     get(handles.pm_analysis_start, 'Value')});
-
+denoise_ecg =  ...
+    get(handles.checkbox2, 'Value');
+if denoise_ecg
+    set(handles.edit12,'enable','on')
+end
 % Create spectral analysis structure
 stcStruct.analysisDescription = analysisDescription;
 stcStruct.StudyEdfFileListResultsFn = strcat(outputFilePrefix, ...
@@ -609,7 +621,7 @@ stcObj.artifactTH = [deltaTh betaTh];
 stcObj.figPos = monitorID;
 stcObj.GENERATE_FILE_LIST = 1;
 stcObj.CREATE_POWER_POINT_SUMMARY = 1;
-stcObj.EXPORT_SPECTRAL_DETAILS = 1;
+stcObj.EXPORT_SPECTRAL_DETAILS = 0;
 stcObj.COMPUTE_TOTAL_POWER = 0;
 stcObj.EXPORT_TOTAL_POWER = 0;
 
@@ -803,6 +815,11 @@ analysisStartStr =  ...
     get(handles.pm_analysis_start, 'String');
 startFile = str2num(analysisStartStr{...
     get(handles.pm_analysis_start, 'Value')});
+denoise_ecg =  ...
+    get(handles.checkbox2, 'Value');
+if denoise_ecg
+    set(handles.edit12,'enable','on')
+end
 
 % Create spectral analysis structure
 stcStruct.analysisDescription = analysisDescription;
@@ -1096,6 +1113,11 @@ if ~isempty(filePartitioningLabel)
             get(handles.pm_analysis_start, 'String');
         startFile = str2num(analysisStartStr{...
             get(handles.pm_analysis_start, 'Value')});
+        denoise_ecg =  ...
+    get(handles.checkbox2, 'Value');
+if denoise_ecg
+    set(handles.edit12,'enable','on')
+end
 
         % Create spectral analysis structure
         stcStruct.analysisDescription = analysisDescription;
@@ -1245,6 +1267,55 @@ function e_description_xml_suffix_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function e_description_xml_suffix_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to e_description_xml_suffix (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on key press with focus on e_analysis_sr_paritioning_varaible and none of its controls.
+function e_analysis_sr_paritioning_varaible_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to e_analysis_sr_paritioning_varaible (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.UICONTROL)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function Untitled_1_Callback(hObject, eventdata, handles)
+% hObject    handle to Untitled_1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in checkbox2.
+function checkbox2_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox2
+
+
+
+function edit12_Callback(hObject, eventdata, handles)
+% hObject    handle to edit12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit12 as text
+%        str2double(get(hObject,'String')) returns contents of edit12 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit12_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit12 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
