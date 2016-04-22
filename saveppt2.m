@@ -554,7 +554,7 @@ for i=1:fig.count
     row=floor((i-1)/addlParms.columns);
     column=mod(i-1,addlParms.columns);
     % Copy the figure to the clipboard
-    print(addlParms.driver,['-f' num2str(addlParms.figure(i))],rendOpt,resOpt);
+    print(addlParms.driver,['-f' num2str(addlParms.figure(i).Number)],rendOpt,resOpt);
     % Paste the contents of the Clipboard:
     pic1 = invoke(new_slide.Shapes,'Paste');
     % Get height and width of picture:
